@@ -1,0 +1,30 @@
+[project]
+name = "fastapi-problem-details"
+version = "0.1.0"
+description = "Structure your API errors with consistent and machine readable format using the RFC 9457 \"Problem Details for HTTP APIs\" standard"
+authors = [{ name = "g0di", email = "benoit.godard.p@gmail.com" }]
+dependencies = ["fastapi>=0.111.1", "pydantic>=2.8.2"]
+requires-python = ">=3.10"
+readme = "README.md"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+lint = ["ruff>=0.0.13", "mypy>=0.1"]
+test = ["mypy>=1.11.0", "ruff>=0.5.5"]
+
+[tool.pdm.scripts]
+lint = { composite = ["ruff format --check", "ruff check", "mypy"] }
+test = "pytest"
+qa = { composite = [
+    "ruff format",
+    "ruff check --fix --show-fixes",
+    "mypy",
+    "test",
+] }
