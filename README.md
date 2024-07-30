@@ -1,6 +1,6 @@
 # fastapi-problem-details <!-- omit in toc -->
 
-This FastAPI plugin allow you to automatically format any errors as Problem details described in (RFC 9457)[https://www.rfc-editor.org/rfc/rfc9457.html]. This allow rich error responses and consistent errors formatting within a single or multiple APIs.
+This FastAPI plugin allow you to automatically format any errors as Problem details described in [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html). This allow rich error responses and consistent errors formatting within a single or multiple APIs.
 
 - [Getting Started](#getting-started)
 - [Handling validation errors](#handling-validation-errors)
