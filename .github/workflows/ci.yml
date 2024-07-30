@@ -39,10 +39,9 @@ jobs:
         fail-on-empty: true
         # (Optional) Title of the test results section in the workflow summary
         title: Tests result - ${{ matrix.python-version }}
-    - name: Publish code coverage
+        name: Code Coverage Summary Report
+    - name: Pubish code coverage
       if: always()
-      uses: MishaKav/pytest-coverage-comment@main
+      uses: irongut/CodeCoverageSummary@v1.3.0
       with:
-        pytest-coverage-path: pytest-coverage.txt
-        pytest-xml-coverage-path: coverage.xml
-        junitxml-path: test-results.xml
+        filename: coverage.xml
