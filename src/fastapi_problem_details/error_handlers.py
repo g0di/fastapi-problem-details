@@ -8,7 +8,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException
 
-from fastapi_problem_details.problem import Problem, ProblemException, ProblemResponse
+from .models import Problem, ProblemException, ProblemResponse
 
 
 def init_app(

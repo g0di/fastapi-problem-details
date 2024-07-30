@@ -3,7 +3,7 @@ from http import HTTPStatus
 import pytest
 from faker import Faker
 
-from fastapi_problem_details.problem import Problem
+from fastapi_problem_details import Problem
 
 
 @pytest.mark.parametrize("http_status", HTTPStatus)

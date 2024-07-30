@@ -6,7 +6,7 @@ This FastAPI plugin allow you to automatically format any errors as Problem deta
 - [Handling validation errors](#handling-validation-errors)
 - [Handling a HTTPException](#handling-a-httpexception)
 - [Handling request against non existing routes](#handling-request-against-non-existing-routes)
-- [Changing default validation error status code](#changing-default-validation-error-status-code)
+- [Changing default validation error status code and/or detail](#changing-default-validation-error-status-code-andor-detail)
 - [Including unhandled exceptions type and stack traces](#including-unhandled-exceptions-type-and-stack-traces)
 - [Registering custom error handlers](#registering-custom-error-handlers)
 - [Raising ProblemException to returns error with more details](#raising-problemexception-to-returns-error-with-more-details)
@@ -23,12 +23,12 @@ Register the plugin against your FastAPI app
 
 ```python
 from fastapi import FastAPI
-import fastapi_problem_details
+import fastapi_problem_details as problem
 
 
 app = FastAPI()
 
-fastapi_problem_details.init_app(app)
+problem.init_app(app)
 ```
 
 At this point any unhandled errors, validation errors and HTTP errors will be automatically formatted as Problem details objects.
@@ -43,11 +43,11 @@ from typing import Any
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-import fastapi_problem_details
+import fastapi_problem_details as problem
 
 app = FastAPI()
 
-fastapi_problem_details.init_app(app)
+problem.init_app(app)
 
 
 class User(BaseModel):
@@ -102,11 +102,11 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException, status
 
-import fastapi_problem_details
+import fastapi_problem_details as problem
 
 app = FastAPI()
 
-fastapi_problem_details.init_app(app)
+problem.init_app(app)
 
 
 @app.get("/")
@@ -148,19 +148,19 @@ curl -X POST http://localhost:8000/not-exist
 
 > Here the `detail` property allow a client to distinguish a 404 caused by an incorrect URL
 
-## Changing default validation error status code
+## Changing default validation error status code and/or detail
 
-By default, validation errors will returns a 422 status code which is the default for FastAPI.
-However, you can override this if you want for example to use a 400 instead.
+By default, validation errors will returns a 422 status code (FastAPI default) with a `"Request validation failed"` detail message.
+However, you can override both of those if you want.
 
 ```python
 from fastapi import FastAPI, status
-import fastapi_problem_details
+import fastapi_problem_details as problem
 
 
 app = FastAPI()
 
-fastapi_problem_details.init_app(app, validation_error_code=status.HTTP_400_BAD_REQUEST)
+problem.init_app(app, validation_error_code=status.HTTP_400_BAD_REQUEST, validation_error_detail="Invalid payload!")
 ```
 
 ## Including unhandled exceptions type and stack traces
@@ -172,11 +172,11 @@ from typing import Any
 
 from fastapi import FastAPI
 
-import fastapi_problem_details
+import fastapi_problem_details as problem
 
 app = FastAPI()
 
-fastapi_problem_details.init_app(app, include_exc_info_in_response=True)
+problem.init_app(app, include_exc_info_in_response=True)
 
 
 class CustomError(Exception):
@@ -243,11 +243,11 @@ from typing import Any
 
 from fastapi import FastAPI, Request, status
 
-import fastapi_problem_details
-from fastapi_problem_details.problem import ProblemResponse
+import fastapi_problem_details as problem
+from fastapi_problem_details import ProblemResponse
 
 app = FastAPI()
-fastapi_problem_details.init_app(app) # Note that this is not required if you simply return ProblemResponse object yourself
+problem.init_app(app) # Note that this is not required if you simply return ProblemResponse object yourself
 
 
 class UserNotFoundError(Exception):
@@ -298,12 +298,12 @@ from typing import Any
 
 from fastapi import FastAPI, status
 
-import fastapi_problem_details
-from fastapi_problem_details.problem import ProblemException
+import fastapi_problem_details as problem
+from fastapi_problem_details import ProblemException
 
 app = FastAPI()
 
-fastapi_problem_details.init_app(app)
+problem.init_app(app)
 
 
 @app.get("/")
