@@ -3,7 +3,7 @@ name = "fastapi-problem-details"
 version = "0.1.0"
 description = "Structure your API errors with consistent and machine readable format using the RFC 9457 \"Problem Details for HTTP APIs\" standard"
 authors = [{ name = "g0di", email = "benoit.godard.p@gmail.com" }]
-dependencies = ["fastapi>=0.111.1", "pydantic>=2.8.2"]
+dependencies = ["fastapi>=0.100.0", "pydantic>=2.0.0"]
 requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
@@ -17,7 +17,14 @@ distribution = true
 
 [tool.pdm.dev-dependencies]
 lint = ["ruff>=0.0.13", "mypy>=0.1"]
-test = ["mypy>=1.11.0", "ruff>=0.5.5"]
+test = [
+    "mypy>=1.11.0",
+    "ruff>=0.5.5",
+    "pytest>=8.3.2",
+    "faker>=26.0.0",
+    "pytest-cov>=5.0.0",
+    "tox-pdm>=0.7.2",
+]
 
 [tool.pdm.scripts]
 lint = { composite = ["ruff format --check", "ruff check", "mypy"] }
@@ -28,3 +35,87 @@ qa = { composite = [
     "mypy",
     "test",
 ] }
+
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
+plugins = ["pydantic.mypy"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.ruff]
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    # Disable rules conflicting with formatter. See: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+    "COM812",
+    "COM819",
+    "D206",
+    "D300",
+    "E111",
+    "E114",
+    "E117",
+    "E501",
+    "ISC001",
+    "ISC001",
+    "Q000",
+    "Q001",
+    "Q002",
+    "Q003",
+    "W191",
+    # Disable required annotations for self and cls
+    "ANN1",
+    # Leave docstrings optional
+    "D1",
+    # Disable rules for TODO comments
+    "TD002",
+    "TD003",
+    # Do not raise errors when encountering TODOs
+    "FIX002",
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint.flake8-type-checking]
+exempt-modules = ["typing", "typing_extensions"]
+runtime-evaluated-base-classes = ["pydantic.BaseModel"]
+strict = true
+
+[tool.ruff.lint.flake8-pytest-style]
+mark-parentheses = false
+fixture-parentheses = false
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = ["pydantic.field_validator"]
+
+[tool.ruff.lint.per-file-ignores]
+# Allow assert statements in tests folder
+"tests/*" = ["S101"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--cov", "--cov-report=term-missing", "-vv"]
+
+[tool.coverage.run]
+branch = true
+source = ["fastapi_problem_details"]
+
+[tool.coverage.paths]
+# Map src files with ones installed in venv.
+# This is for properly combining coverages report when testing against installed version of the project
+source = [
+    "src/fastapi_problem_details",
+    "*/site-packages/fastapi_problem_details",
+]
+
+[tool.coverage.report]
+exclude_also = ["if TYPE_CHECKING:", "class .*\\bProtocol\\):", "@overload"]
