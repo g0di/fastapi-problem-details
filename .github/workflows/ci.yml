@@ -38,4 +38,4 @@ jobs:
         summary: true
         fail-on-empty: true
         # (Optional) Title of the test results section in the workflow summary
-        title: Tests result
+        title: Tests result - ${{ matrix.python-version }}
