@@ -29,7 +29,7 @@ jobs:
         pdm lint
     - name: Run Tests
       run: |
-        pdm test --junit-xml=test-results.xml
+        pdm test --junit-xml=test-results.xml --cov-report xml:coverage.xml
     - name: Publish tests result
       if: always()
       uses: pmeier/pytest-results-action@main
@@ -39,3 +39,9 @@ jobs:
         fail-on-empty: true
         # (Optional) Title of the test results section in the workflow summary
         title: Tests result - ${{ matrix.python-version }}
+    - name: Publish code coverage
+      if: always()
+      uses: orgoro/coverage@v3.2
+      with:
+          coverageFile: coverage.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
