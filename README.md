@@ -230,6 +230,8 @@ $ curl http://localhost:8000
 }
 ```
 
+> Note that `detail` property will be filled with the exception error message (`str(error)`), if any.
+
 By doing so, any unhandled errors will ends up with a Problem details response including a `exc_type` and `exc_stack` properties containing respectively the type of the exception and its stack traces as a list of strings.
 
 > :warning: This feature is expected to be used only for development purposes. You should not enable this on production because it can leak sensitive internal information. Use it at your own risk.
