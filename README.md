@@ -68,7 +68,7 @@ curl -X POST http://localhost:8000/users/ -d '{}' -H "Content-Type: application/
   "type": "about:blank",
   "title": "Unprocessable Entity",
   "status": 422,
-  "detail": "",
+  "detail": "Request validation failed",
   "instance": null,
   "errors": [
     {
