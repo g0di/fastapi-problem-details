@@ -29,7 +29,7 @@ jobs:
         pdm lint
     - name: Run Tests
       run: |
-        pdm test --junit-xml=test-results.xml --cov-report xml:coverage.xml
+        pdm test --junit-xml=test-results.xml --cov-report xml:coverage.xml | tee pytest-coverage.txt
     - name: Publish tests result
       if: always()
       uses: pmeier/pytest-results-action@main
@@ -43,5 +43,6 @@ jobs:
       if: always()
       uses: MishaKav/pytest-coverage-comment@main
       with:
+        pytest-coverage-path: pytest-coverage.txt
         pytest-xml-coverage-path: coverage.xml
         junitxml-path: test-results.xml
