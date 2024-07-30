@@ -41,7 +41,7 @@ jobs:
         title: Tests result - ${{ matrix.python-version }}
     - name: Publish code coverage
       if: always()
-      uses: orgoro/coverage@v3.2
+      uses: MishaKav/pytest-coverage-comment@main
       with:
-          coverageFile: coverage.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
+        pytest-coverage-path: coverage.xml
+        junitxml-path: test-results.xml
