@@ -29,4 +29,13 @@ jobs:
         pdm lint
     - name: Run Tests
       run: |
-        pdm test
+        pdm test --junit-xml=test-results.xml
+    - name: Publish tests result
+      if: always()
+      uses: pmeier/pytest-results-action@main
+      with:
+        path: test-results.xml
+        summary: true
+        fail-on-empty: true
+        # (Optional) Title of the test results section in the workflow summary
+        title: Tests result
