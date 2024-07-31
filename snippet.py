@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import FastAPI, status
 
 import fastapi_problem_details
-from fastapi_problem_details.problem import ProblemException
+from fastapi_problem_details.models import ProblemException
 
 app = FastAPI()
 
