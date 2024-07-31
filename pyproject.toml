@@ -7,6 +7,34 @@ dependencies = ["fastapi>=0.100.0", "pydantic>=2.0.0"]
 requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
+keywords = ["fastapi", "problem", "plugin"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Plugins",
+    "Environment :: Web Environment",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Telecommunications Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Internet",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Software Development :: Libraries",
+]
+
+[project.urls]
+Homepage = "https://github.com/g0di/fastapi-problem-details"
+Documentation = "https://github.com/g0di/fastapi-problem-details"
+Source = "https://github.com/g0di/fastapi-problem-details"
+Changelog = "https://github.com/g0di/fastapi-problem-details/blob/main/README.md"
+
 
 [build-system]
 requires = ["pdm-backend"]
