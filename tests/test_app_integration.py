@@ -31,16 +31,22 @@ def assert_problem_response(  # noqa: PLR0913
             assert resp.headers.get(h) == v
 
     problem_data = resp.json()
-    assert problem_data == {
-        "type": type,
-        "status": status,
-        "title": title or HTTPStatus(status).phrase,
-        "detail": detail or HTTPStatus(status).description,
-        "instance": instance,
-        **extra,
-    }
+    assert problem_data == omit_none(
+        {
+            "type": type,
+            "status": status,
+            "title": title or HTTPStatus(status).phrase,
+            "detail": detail or HTTPStatus(status).description,
+            "instance": instance,
+            **extra,
+        }
+    )
 
     return cast(dict[str, Any], problem_data)
+
+
+def omit_none(value: dict[str, Any]) -> dict[str, Any]:
+    return {k: v for k, v in value.items() if v is not None}
 
 
 def test_init_app_register_problem_details_as_default_response() -> None:

@@ -1,14 +1,28 @@
 from http import HTTPStatus
 from typing import Any, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, conint
+from pydantic.json_schema import SkipJsonSchema
 from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse
 
+# Using a conint allow to generate correct JSONSchema when in an union with None
+StatusCode = conint(ge=100, lt=600)
+
 
 class Problem(BaseModel):
+    """A "problem detail" carrying machine-readable details of errors in HTTP response content."""
+
     DEFAULT_TYPE: ClassVar[str] = "about:blank"
-    model_config = ConfigDict(extra="allow")
+    model_config = ConfigDict(
+        extra="allow",
+        json_schema_extra={
+            "externalDocs": {
+                "description": "RFC 9457",
+                "url": "https://www.rfc-editor.org/rfc/rfc9457.html",
+            },
+        },
+    )
 
     type: str = Field(
         default=DEFAULT_TYPE,
@@ -20,7 +34,7 @@ class Problem(BaseModel):
         ),
         examples=["/some/uri-reference"],
     )
-    title: str | None = Field(
+    title: str | SkipJsonSchema[None] = Field(
         default=None,
         description=(
             "A short summary of the problem type. Written in English and readable "
@@ -29,7 +43,7 @@ class Problem(BaseModel):
         ),
         examples=["some title for the error situation"],
     )
-    status: int | None = Field(
+    status: StatusCode | SkipJsonSchema[None] = Field(  # type: ignore  # noqa: PGH003
         default=None,
         ge=100,
         lt=600,
@@ -38,7 +52,7 @@ class Problem(BaseModel):
             "of the problem"
         ),
     )
-    detail: str | None = Field(
+    detail: str | SkipJsonSchema[None] = Field(
         default=None,
         description=(
             "A human readable explanation specific to this occurrence of the "
@@ -48,7 +62,7 @@ class Problem(BaseModel):
         ),
         examples=["some description for the error situation"],
     )
-    instance: str | None = Field(
+    instance: str | SkipJsonSchema[None] = Field(
         default=None,
         description=(
             "A URI reference that identifies the specific occurrence of the problem, "
@@ -96,6 +110,7 @@ class ProblemException(Exception):  # noqa: N818
         headers: dict[str, str] | None = None,
         **extra: Any,  # noqa: ANN401
     ) -> None:
+        super().__init__(f"A problem occurred ({status})")
         self.status = status
         self.title = title
         self.detail = detail
@@ -129,7 +144,7 @@ class ProblemResponse(JSONResponse):
             **extra,
         )
         super().__init__(
-            problem.model_dump(mode="json"),
+            problem.model_dump(mode="json", exclude_none=True),
             status,
             headers,
             media_type,
