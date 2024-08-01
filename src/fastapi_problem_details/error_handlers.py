@@ -67,7 +67,7 @@ def init_app(
         extra: dict[str, Any] = {}
         if include_exc_info_in_response:
             extra["exc_stack"] = traceback.format_exception(exc)
-            extra["exc_type"] = str(type(exc))
+            extra["exc_type"] = f"{type(exc).__module__}.{type(exc).__qualname__}"
 
         return ProblemResponse(
             status=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc), **extra

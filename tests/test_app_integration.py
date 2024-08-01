@@ -28,7 +28,8 @@ def assert_problem_response(  # noqa: PLR0913
 
     if headers:
         for h, v in headers.items():
-            assert resp.headers.get(h) == v
+            assert h in resp.headers
+            assert resp.headers[h] == v
 
     problem_data = resp.json()
     assert problem_data == omit_none(
@@ -176,7 +177,7 @@ class TestUnhandledError:
             resp,
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=error_message,
-            exc_type=str(TestUnhandledError.FakeError),
+            exc_type="tests.test_app_integration.TestUnhandledError.FakeError",
             exc_stack=ANY,
         )
         assert problem_data["exc_stack"], "exc_stack should not be empty"
