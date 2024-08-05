@@ -69,7 +69,6 @@ curl -X POST http://localhost:8000/users/ -d '{}' -H "Content-Type: application/
   "title": "Unprocessable Entity",
   "status": 422,
   "detail": "Request validation failed",
-  "instance": null,
   "errors": [
     {
       "type": "missing",
@@ -142,7 +141,6 @@ curl -X POST http://localhost:8000/not-exist
   "title": "Not Found",
   "status": 404,
   "detail": "Nothing matches the given URI",
-  "instance": null
 }
 ```
 
@@ -202,7 +200,6 @@ $ curl http://localhost:8000
   "title": "Internal Server Error",
   "status": 500,
   "detail": "Server got itself in trouble",
-  "instance": null,
   "exc_stack": [
     "Traceback (most recent call last):\n",
     "  File \"/Users/gody/Development/OpenSource/fastapi-problem-details/.venv/lib/python3.11/site-packages/starlette/middleware/errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n",
