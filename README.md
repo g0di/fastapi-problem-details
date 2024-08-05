@@ -48,6 +48,8 @@ At this point any unhandled errors `Exception`, validation errors `fastapi.excep
 }
 ```
 
+The plugin actaully add custom error handlers for all mentionned kind of errors in order to return proper Problem Details responses. Note however that you can override any of those "default" handlers after initializing the plugin.
+
 Now, let's dig a bit more on what the plugin is actually doing.
 
 ## Validation errors handling
