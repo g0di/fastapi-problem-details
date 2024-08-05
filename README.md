@@ -333,7 +333,9 @@ Note that in this example I've provided a custom `type` property but this might 
 
 > Likewise, truly generic problems -- i.e., conditions that might apply to any resource on the Web -- are usually better expressed as plain status codes. For example, a "write access disallowed" problem is probably unnecessary, since a 403 Forbidden status code in response to a PUT request is self-explanatory.
 
-Also note that you can additional properties to the `ProblemResponse` object like `headers` or `instance`. Any extra properties will be added as-is in the returned Problem Details object (like the `user_id` in this example)
+Also note that you can additional properties to the `ProblemResponse` object like `headers` or `instance`. Any extra properties will be added as-is in the returned Problem Details object (like the `user_id` in this example).
+
+Last but not least, any `null` values are stripped from returned Problem Details object.
 
 ## Returning HTTP errors as Problem Details
 
