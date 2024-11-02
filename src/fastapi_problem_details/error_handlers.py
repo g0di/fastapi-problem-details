@@ -1,10 +1,9 @@
 # To catch user not found exception
 import logging
-import traceback
 from http import HTTPStatus
-from typing import Any
 
 from fastapi import FastAPI, Request, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException
 
@@ -27,7 +26,7 @@ def init_app(
         return ProblemResponse(
             status=validation_error_code,
             detail=validation_error_detail,
-            errors=exc.errors(),
+            errors=jsonable_encoder(exc.errors()),
         )
 
     @app.exception_handler(ProblemException)
@@ -46,13 +45,12 @@ def init_app(
 
     @app.exception_handler(HTTPException)
     async def handle_http_exception(_: Request, exc: HTTPException) -> ProblemResponse:
+        http_status = HTTPStatus(exc.status_code)
         # NOTE: HTTPException detail default to HTTStatus.phrase when not provided
         # However, Problem use this phrase as title, to avoid duplicate between problem
-        # title and detail we set detail to None if actual http exception detail is the
-        # default value.
-        detail = (
-            exc.detail if exc.detail != HTTPStatus(exc.status_code).phrase else None
-        )
+        # title and detail we set detail to None if actual http
+        # exception detail is the default value.
+        detail = exc.detail if exc.detail != http_status.phrase else None
         return ProblemResponse(
             status=exc.status_code,
             detail=detail,
@@ -62,15 +60,9 @@ def init_app(
     @app.exception_handler(Exception)
     async def handle_unexpected_error(_: Request, exc: Exception) -> ProblemResponse:
         logger = logging.getLogger(__name__)
-        logger.exception("Unhandled exception")
-
-        extra: dict[str, Any] = {}
-        if include_exc_info_in_response:
-            extra["exc_stack"] = traceback.format_exception(exc)
-            extra["exc_type"] = f"{type(exc).__module__}.{type(exc).__qualname__}"
-
-        return ProblemResponse(
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc), **extra
+        logger.exception("Unexpected error")
+        return ProblemResponse.from_exception(
+            exc, include_exc_info=include_exc_info_in_response
         )
 
     return app
