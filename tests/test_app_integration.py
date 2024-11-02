@@ -231,6 +231,25 @@ class TestHttpException:
         # Then
         assert_problem_response(resp, status=status)
 
+    @pytest.mark.xfail(reason="Not implemented yet")
+    def test_app_http_404_exception_returns_a_not_found_problem_details(self) -> None:
+        # Given
+        app = FastAPI()
+
+        problem.init_app(app)
+
+        # When
+        with TestClient(app, raise_server_exceptions=False) as test_client:
+            resp = test_client.post("/not-existing-route")
+
+        # Then
+        assert_problem_response(
+            resp,
+            status=status.HTTP_404_NOT_FOUND,
+            detail='Nothing matches the given URI: "/not-existing-route"',
+            uri="/not-existing-route",
+        )
+
 
 class TestProblemResponse:
     def test_app_problem_response_returns_a_problem_details(self, faker: Faker) -> None:
