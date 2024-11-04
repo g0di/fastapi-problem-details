@@ -5,11 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.3]
 
 ### Fixed
 
+- Fixed incorrect problem details openapi schema examples ([#b9769fb](https://github.com/g0di/fastapi-problem-details/commit/e054220e8f23807cca708510274ba294d2fcf17f))
+
+### Docs
+
 - Updated the doc examples to align with changes made in previous release
+- Add a section explaining how to document and register additional problem details
+- Mention that `null` values are stripped from returned problem details
+- Mention that all error handlers can be overriden
 
 ## [0.1.2] - 2024-08-01
 
