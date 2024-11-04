@@ -7,13 +7,15 @@ This FastAPI plugin allow you to automatically format any errors as Problem deta
   - [Changing default validation error status code and/or detail](#changing-default-validation-error-status-code-andor-detail)
 - [HTTP errors handling](#http-errors-handling)
   - [Unexisting routes error handling](#unexisting-routes-error-handling)
-- [Unhandled errors handling](#unhandled-errors-handling)
+- [Unexpected errors handling](#unexpected-errors-handling)
   - [Including exceptions type and stack traces](#including-exceptions-type-and-stack-traces)
 - [Custom errors handling](#custom-errors-handling)
 - [Returning HTTP errors as Problem Details](#returning-http-errors-as-problem-details)
   - [Keeping the code DRY](#keeping-the-code-dry)
     - [1. Inheritance](#1-inheritance)
     - [2. Custom error handlers](#2-custom-error-handlers)
+    - [Wrapping up](#wrapping-up)
+- [Documenting your custom problems details](#documenting-your-custom-problems-details)
 
 ## Getting Started
 
@@ -178,13 +180,11 @@ curl -X POST http://localhost:8000/not-exist
 }
 ```
 
-## Unhandled errors handling
+## Unexpected errors handling
 
-Any unhandled errors raised during processing of a request will be automatically handled by the plugin which will returns an internal server error formatted as a Problem Details.
+Any unexpected errors raised during processing of a request will be automatically handled by the plugin which will returns an internal server error formatted as a Problem Details.
 
 > Also note that the exception will be logged as well using logger named `fastapi_problem_details.error_handlers`
-
-The message of the error `str(exception)` will be used as the `detail` property and will default to a more generic message when not defined.
 
 ```python
 from typing import Any
@@ -195,7 +195,7 @@ import fastapi_problem_details as problem
 
 app = FastAPI()
 
-problem.init_app(app, include_exc_info_in_response=True)
+problem.init_app(app)
 
 
 class CustomError(Exception):
@@ -203,10 +203,6 @@ class CustomError(Exception):
 
 
 @app.get("/")
-def raise_error() -> Any:  # noqa: ANN401
-    raise CustomError
-
-@app.get("/with-details")
 def raise_error() -> Any:  # noqa: ANN401
     raise CustomError("Something went wrong...")
 ```
@@ -218,13 +214,6 @@ $ curl http://localhost:8000
   "title": "Internal Server Error",
   "status": 500,
   "detail": "Server got itself in trouble",
-}
-$ curl http://localhost:8000/with-details
-{
-  "type": "about:blank",
-  "title": "Internal Server Error",
-  "status": 500,
-  "detail": "Something went wrong...",
 }
 ```
 
@@ -324,7 +313,6 @@ $ curl http://localhost:8000/users/1234
   "title":"User Not Found",
   "status":404,
   "detail":"There is no user with id '1234'",
-  "instance":null,
   "user_id":"1234"
 }
 ```
@@ -333,7 +321,7 @@ Note that in this example I've provided a custom `type` property but this might 
 
 > Likewise, truly generic problems -- i.e., conditions that might apply to any resource on the Web -- are usually better expressed as plain status codes. For example, a "write access disallowed" problem is probably unnecessary, since a 403 Forbidden status code in response to a PUT request is self-explanatory.
 
-Also note that you can additional properties to the `ProblemResponse` object like `headers` or `instance`. Any extra properties will be added as-is in the returned Problem Details object (like the `user_id` in this example).
+Also note that you can include additional properties to the `ProblemResponse` object like `headers` or `instance`. Any extra properties will be added as-is in the returned Problem Details object (like the `user_id` in this example).
 
 Last but not least, any `null` values are stripped from returned Problem Details object.
 
@@ -390,7 +378,8 @@ curl http://localhost:8000 -v
   "type":"about:blank",
   "title":"Service Unavailable",
   "status":503,
-  "detail":"One or several internal services are not working properly","service_1":"down",
+  "detail":"One or several internal services are not working properly",
+  "service_1":"down",
   "service_2":"up"
 }
 ```
@@ -399,7 +388,7 @@ The `ProblemException` exception takes almost same arguments as a `ProblemRespon
 
 ### Keeping the code DRY
 
-If you start having to raise almost the same `ProblemException` in several places of your code (for example when you validate a requester permissions) you have too ways to avoid copy-pasting the same object in many places of your code
+If you start having to raise almost the same `ProblemException` in several places of your code (for example when you validate a requester permissions) you have two ways to avoid copy-pasting the same object in many places of your code
 
 #### 1. Inheritance
 
@@ -431,7 +420,7 @@ def do_something_meaningful(user_id: str):
 
 The advantage of this solution is that its rather simple and straightforward. You do not have anything else to do to properly returns Problem Details responses.
 
-The main issue of this is that it can cause your code to cross boundaries. If you start to use `ProblemException` into your domain logic, you couple your core code with your primary adapter (See ports and adapters pattern), your API. If you decide to build a CLI and/or and event based application using the same core logic, you'll end up with uncomfortable problem exception and status code which has no meaning here.
+The main issue of this is that it can cause your code to cross boundaries. If you start to use `ProblemException` into your domain logic, you couple your core code with your HTTP API. If you decide to build a CLI and/or and event based application using the same core logic, you'll end up with uncomfortable problem exception and status code which has no meaning here.
 
 #### 2. Custom error handlers
 
@@ -484,3 +473,58 @@ def get_user_by_id(user_id: str):
 The biggest advantage of this solution is that you decouple your core code from your FastAPI app. You can define regular Python exceptions whatever you want and just do the conversion for your API in your custom error handler(s).
 
 The disadvantage obviously is that it requires you to write more code. Its a question of balance.
+
+#### Wrapping up
+
+Considering the two previous mechanisms, the way which worked best for me is to do the following:
+
+- When I raise errors in my core (domain code, business logic) I use dedicated exceptions, unrelated to HTTP nor APIs, and I add a custom error handler to my FastAPI app to handle and returns a ProblemResponse`.
+- When I want to raise an error directly in one of my API controller (i.e: a FastAPI route) I simply raise a `ProblemException`. If I'm raising same problem exception in several places I create a subclass of problem exception and put in my defaults and raise that error instead.
+
+## Documenting your custom problems details
+
+When registering problem details against your FastAPI app, it adds a `default` openapi response to all routes with the Problem Details schema. This might be enough in most cases but if you want to explicit additional problem details responses for specific status code or document additional properties you can register your Problem Details.
+
+```python
+from typing import Any, Literal
+
+from fastapi import FastAPI, Request, status
+
+import fastapi_problem_details as problem
+from fastapi_problem_details import ProblemResponse
+
+app = FastAPI()
+problem.init_app(app)
+
+
+class UserNotFoundProblem(problem.Problem):
+    status: Literal[404]
+    user_id: str
+
+
+class UserNotFoundError(Exception):
+    def __init__(self, user_id: str) -> None:
+        super().__init__(f"There is no user with id {user_id!r}")
+        self.user_id = user_id
+
+
+@app.exception_handler(UserNotFoundError)
+async def handle_user_not_found_error(
+    _: Request, exc: UserNotFoundError
+) -> ProblemResponse:
+    return ProblemResponse.from_exception(
+        exc,
+        status=status.HTTP_404_NOT_FOUND,
+        detail=f"User {exc.user_id} not found",
+        user_id=exc.user_id,
+    )
+
+
+@app.get("/users/{user_id}", responses={404: {"model": UserNotFoundProblem}})
+def get_user(user_id: str) -> Any:  # noqa: ANN401
+  raise UserNotFoundError(user_id)
+```
+
+Note that this has limitation. Indeed, the `UserNotFoundProblem` class just act as a model schema for openapi documentation. You actually not instantiate this class and no validation is performed when returning the problem response. It means that the error handler can returns something which does not match a `UserNotFoundProblem`.
+
+This is because of the way FastAPI manages errors. At the moment, there is no way to register error handler and its response schema in the same place and there is no mechanism to ensure both are synced.
