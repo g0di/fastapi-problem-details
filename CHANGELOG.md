@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed incorrect problem details openapi schema examples ([#b9769fb](https://github.com/g0di/fastapi-problem-details/commit/e054220e8f23807cca708510274ba294d2fcf17f))
+- Fixed incorrect problem details openapi schema examples ([#b9769fb](https://github.com/g0di/fastapi-problem-details/commit/b9769fbbfb6279e62776f93c20c27e7bf3d7062a))
 
 ### Docs
 
