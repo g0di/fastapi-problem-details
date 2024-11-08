@@ -17,7 +17,15 @@ def init_app(
     validation_error_detail: str = "Request validation failed",
     include_exc_info_in_response: bool = False,
 ) -> FastAPI:
-    app.router.responses.setdefault("default", {"model": Problem})
+    app.router.responses.setdefault(
+        "default",
+        {
+            "description": "Problem",
+            "content": {
+                "application/problem+json": {"schema": Problem.model_json_schema()}
+            },
+        },
+    )
 
     @app.exception_handler(RequestValidationError)
     async def handle_validation_error(

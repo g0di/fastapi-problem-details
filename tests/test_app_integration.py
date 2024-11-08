@@ -56,7 +56,15 @@ def test_init_app_register_problem_details_as_default_response() -> None:
     # When
     problem.init_app(app)
     # Then
-    assert ("default", {"model": Problem}) in app.router.responses.items()
+    assert (
+        "default",
+        {
+            "description": "Problem",
+            "content": {
+                "application/problem+json": {"schema": Problem.model_json_schema()}
+            },
+        },
+    ) in app.router.responses.items()
 
 
 class TestValidationError:
