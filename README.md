@@ -16,6 +16,8 @@ This FastAPI plugin allow you to automatically format any errors as Problem deta
     - [2. Custom error handlers](#2-custom-error-handlers)
     - [Wrapping up](#wrapping-up)
 - [Documenting your custom problems details](#documenting-your-custom-problems-details)
+- [Troubleshooting](#troubleshooting)
+  - [Problem "default" openapi response is not added into additional FastAPI routers routes](#problem-default-openapi-response-is-not-added-into-additional-fastapi-routers-routes)
 
 ## Getting Started
 
@@ -528,3 +530,26 @@ def get_user(user_id: str) -> Any:  # noqa: ANN401
 Note that this has limitation. Indeed, the `UserNotFoundProblem` class just act as a model schema for openapi documentation. You actually not instantiate this class and no validation is performed when returning the problem response. It means that the error handler can returns something which does not match a `UserNotFoundProblem`.
 
 This is because of the way FastAPI manages errors. At the moment, there is no way to register error handler and its response schema in the same place and there is no mechanism to ensure both are synced.
+
+## Troubleshooting
+
+### Problem "default" openapi response is not added into additional FastAPI routers routes
+
+If you use `APIRouter` from FastAPI to bind your routes and then include routers in your main API you must initializes the problem details error handlers BEFORE including the routers if you want your routes to have their OpenAPI responses documented with the `default` problem details response.
+
+```python
+from fastapi import APIRouter, FastAPI
+
+import fastapi_problem_details as problem
+
+app = FastAPI()
+v1 = APIRouter(prefix="/v1")
+
+# THIS DOES NOT WORK
+app.include_router(v1)
+problem.init_app(app)
+
+# Instead, init problem errors handlers first
+problem.init_app(app)
+app.include_router(v1)
+```
