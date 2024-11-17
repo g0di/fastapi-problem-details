@@ -18,6 +18,7 @@ This FastAPI plugin allow you to automatically format any errors as Problem deta
 - [Documenting your custom problems details](#documenting-your-custom-problems-details)
 - [Troubleshooting](#troubleshooting)
   - [Problem "default" openapi response is not added into additional FastAPI routers routes](#problem-default-openapi-response-is-not-added-into-additional-fastapi-routers-routes)
+- [TODOs](#todos)
 
 ## Getting Started
 
@@ -553,3 +554,8 @@ problem.init_app(app)
 problem.init_app(app)
 app.include_router(v1)
 ```
+
+## TODOs
+
+- Put the `Problem` schema in API openapi definitions to be reused accross the API and use a reference in response
+- Add a 422 validation error in openapi
