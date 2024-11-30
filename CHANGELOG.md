@@ -64,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ability to raise `ProblemException` directly for returning problem details responses
 - Add ability to returns `ProblemResponse` objects for returning problem details responses
 
-[unreleased]: https://github.com/g0di/fastapi-problem-details/compare/v0.1.4...HEAD
+[unreleased]: https://github.com/g0di/fastapi-problem-details/compare/0.1.4...HEAD
 [0.1.4]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.4
 [0.1.3]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.3
 [0.1.2]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.2
