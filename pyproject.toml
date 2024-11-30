@@ -33,7 +33,7 @@ classifiers = [
 Homepage = "https://github.com/g0di/fastapi-problem-details"
 Documentation = "https://github.com/g0di/fastapi-problem-details"
 Source = "https://github.com/g0di/fastapi-problem-details"
-Changelog = "https://github.com/g0di/fastapi-problem-details/blob/main/README.md"
+Changelog = "https://github.com/g0di/fastapi-problem-details/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["pdm-backend"]
