@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## Docs
+
+- Aligned this changelog with actual github releases
+- Updated project URL pointing to this changelog (for PyPi)
+
+## [0.1.4] - 2024-11-08
+
+## Fixed
+
+- Fixed the content type of the `default` problem details response in the generated FastAPI OpenAPI specification to `application/problem+json` ([#720e154](https://github.com/g0di/fastapi-problem-details/commit/720e1541053b416123ac67b3c90ef4c71d7c5e44))
+
+## Docs
+
+- Add a troubleshooting section in the documentation about a small workaround when dealing with FastAPI `APIRouter` routers ([#447df1e](https://github.com/g0di/fastapi-problem-details/commit/447df1e319efb966c9484ffa5338978c8b53e2e9))
+
 ## [0.1.3] - 2024-11-04
 
 ### Fixed
@@ -46,3 +63,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ability to register the plugin to transform unhandled, validation and http errors as problem details response
 - Add ability to raise `ProblemException` directly for returning problem details responses
 - Add ability to returns `ProblemResponse` objects for returning problem details responses
+
+[unreleased]: https://github.com/g0di/fastapi-problem-details/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.4
+[0.1.3]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.3
+[0.1.2]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.2
+[0.1.1]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.1
+[0.1.0]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.0
