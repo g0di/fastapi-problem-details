@@ -2,7 +2,7 @@
 import logging
 from http import HTTPStatus
 
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException
@@ -13,7 +13,7 @@ from .models import Problem, ProblemException, ProblemResponse
 def init_app(
     app: FastAPI,
     *,
-    validation_error_code: int = status.HTTP_422_UNPROCESSABLE_ENTITY,
+    validation_error_code: int = 422,
     validation_error_detail: str = "Request validation failed",
     include_exc_info_in_response: bool = False,
 ) -> FastAPI:
