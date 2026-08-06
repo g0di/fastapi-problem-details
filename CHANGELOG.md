@@ -5,9 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.5] - 2026-08-06
 
-## Docs
+### Fixed
+
+- Deprecation warning for `starlette.status.HTTP_422_UNPROCESSABLE_ENTITY` usage
+
+### Docs
 
 - Aligned this changelog with actual github releases
 - Updated project URL pointing to this changelog (for PyPi)
@@ -64,7 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ability to raise `ProblemException` directly for returning problem details responses
 - Add ability to returns `ProblemResponse` objects for returning problem details responses
 
-[unreleased]: https://github.com/g0di/fastapi-problem-details/compare/0.1.4...HEAD
+[unreleased]: https://github.com/g0di/fastapi-problem-details/compare/0.1.5...HEAD
+[0.1.5]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.5
 [0.1.4]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.4
 [0.1.3]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.3
 [0.1.2]: https://github.com/g0di/fastapi-problem-details/releases/tag/0.1.2
